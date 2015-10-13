@@ -68,11 +68,12 @@ prepare-target: FORCE
 all: prepare-target
 	+@$(GLUONMAKE) prepare
 	+@$(GLUONMAKE) images
+	+@$(GLUONMAKE) modules
 
 prepare: prepare-target
 	+@$(GLUONMAKE) $@
 
-clean download images: FORCE
+clean download images modules: FORCE
 	@$(CheckExternal)
 	@$(CheckTarget)
 	+@$(GLUONMAKE_EARLY) maybe-prepare-target
@@ -173,6 +174,10 @@ override SUBTARGET := $(GLUON_TARGET_$(GLUON_TARGET)_SUBTARGET)
 target_prepared_stamp := $(BOARD_BUILDDIR)/target-prepared
 gluon_prepared_stamp := $(BOARD_BUILDDIR)/prepared
 
+PREPARED_RELEASE = $$(cat $(gluon_prepared_stamp))
+IMAGE_PREFIX = gluon-$(GLUON_SITE_CODE)-$(PREPARED_RELEASE)
+MODULE_PREFIX = gluon-$(GLUON_SITE_CODE)-$(PREPARED_RELEASE)
+
 
 include $(INCLUDE_DIR)/target.mk
 
@@ -223,13 +228,6 @@ config: FORCE
 			| sed -e 's/ /\n/g'; \
 	) > $(BOARD_BUILDDIR)/config.tmp
 	scripts/config/conf --defconfig=$(BOARD_BUILDDIR)/config.tmp Config.in
-	mv .config $(BOARD_BUILDDIR)/config
-
-	echo 'CONFIG_ALL_KMODS=y' >> $(BOARD_BUILDDIR)/config.tmp
-	scripts/config/conf --defconfig=$(BOARD_BUILDDIR)/config.tmp Config.in
-	mv .config $(BOARD_BUILDDIR)/config-allmods
-
-	cp $(BOARD_BUILDDIR)/config .config
 
 prepare-target: FORCE
 	rm $(GLUON_OPENWRTDIR)/tmp || true
@@ -279,8 +277,8 @@ toolchain: $(toolchain/stamp-install) $(tools/stamp-install)
 include $(INCLUDE_DIR)/kernel.mk
 
 kernel: FORCE
-	+$(NO_TRACE_MAKE) -C $(TOPDIR)/target/linux/$(BOARD) -f $(GLUONDIR)/include/Makefile.target $(LINUX_DIR)/.image TARGET_BUILD=1
-	+$(NO_TRACE_MAKE) -C $(TOPDIR)/target/linux/$(BOARD) -f $(GLUONDIR)/include/Makefile.target $(LINUX_DIR)/.modules TARGET_BUILD=1
+	+$(NO_TRACE_MAKE) -C $(TOPDIR)/target/linux/$(BOARD) $(LINUX_DIR)/.image TARGET_BUILD=1
+	+$(NO_TRACE_MAKE) -C $(TOPDIR)/target/linux/$(BOARD) $(LINUX_DIR)/.modules TARGET_BUILD=1
 
 packages: $(package/stamp-compile)
 	$(_SINGLE)$(SUBMAKE) -r package/index
@@ -308,6 +306,14 @@ prepare: FORCE
 $(gluon_prepared_stamp):
 	+$(GLUONMAKE) prepare
 
+modules: FORCE $(gluon_prepared_stamp)
+	-rm -f $(GLUON_MODULEDIR)/*/$(BOARD)/$(if $(SUBTARGET),$(SUBTARGET),generic)/*
+	-rmdir -p $(GLUON_MODULEDIR)/*/$(BOARD)/$(if $(SUBTARGET),$(SUBTARGET),generic)
+	mkdir -p $(GLUON_MODULEDIR)/$(MODULE_PREFIX)/$(BOARD)/$(if $(SUBTARGET),$(SUBTARGET),generic)
+	cp $(PACKAGE_DIR)/kmod-*.ipk $(GLUON_MODULEDIR)/$(MODULE_PREFIX)/$(BOARD)/$(if $(SUBTARGET),$(SUBTARGET),generic)
+
+	$(_SINGLE)$(SUBMAKE) -r package/index PACKAGE_DIR=$(GLUON_MODULEDIR)/$(MODULE_PREFIX)/$(BOARD)/$(if $(SUBTARGET),$(SUBTARGET),generic)
+
 
 include $(INCLUDE_DIR)/package-ipkg.mk
 
@@ -319,9 +325,6 @@ PROFILE_KDIR = $(PROFILE_BUILDDIR)/kernel
 BIN_DIR = $(PROFILE_BUILDDIR)/images
 
 TARGET_DIR = $(PROFILE_BUILDDIR)/root
-
-PREPARED_RELEASE = $$(cat $(gluon_prepared_stamp))
-IMAGE_PREFIX = gluon-$(GLUON_SITE_CODE)-$(PREPARED_RELEASE)
 
 OPKG:= \
   IPKG_TMP="$(TMP_DIR)/ipkgtmp" \
@@ -416,6 +419,6 @@ manifest: FORCE
 		) : \
 	) >> $(GLUON_BUILDDIR)/$(GLUON_BRANCH).manifest.tmp
 
-.PHONY: all images prepare clean gluon-tools manifest
+.PHONY: all images prepare modules clean gluon-tools manifest
 
 endif
