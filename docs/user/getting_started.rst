@@ -115,16 +115,21 @@ Environment variables
 Gluon's build process can be controlled by various environment variables.
 
 GLUON_SITEDIR
-  Path to the site configuration. Defaults to ``site/``.
+  Path to the site configuration. Defaults to ``site``.
 
 GLUON_BUILDDIR
-  Working directory during build. Defaults to ``build/``.
+  Working directory during build. Defaults to ``build``.
+
+GLUON_OPKG_KEY
+  Path key file used to sign the module opkg repository. Defaults to ``$(GLUON_BULDDIR)/gluon-opkg-key``.
+
+  The private key will be stored as ``$(GLUON_OPKG_KEY)``, the public key as ``$(GLUON_OPKG_KEY).pub``.
 
 GLUON_OUTPUTDIR
-  Path where output files will be stored. Defaults to ``output/``.
+  Path where output files will be stored. Defaults to ``output``.
 
 GLUON_IMAGEDIR
-  Path where images will be stored. Defaults to ``$(GLUON_OUTPUTDIR)/images/``.
+  Path where images will be stored. Defaults to ``$(GLUON_OUTPUTDIR)/images``.
 
 GLUON_MODULEDIR
   Path where the kernel module opkg repository will be stored. Defaults to ``$(GLUON_OUTPUTDIR)/modules``.
@@ -140,3 +145,11 @@ So all in all, to update and rebuild a Gluon build tree, the following commands 
     make update
     make clean GLUON_TARGET=ar71xx-generic
     make GLUON_TARGET=ar71xx-generic
+
+
+Signing key management
+----------------------
+
+The signing keypair will be automatically generated as ``$(GLUON_OPKG_KEY)``
+and ``$(GLUON_OPKG_KEY).pub`` when needed. ``make create-key`` can be
+used to only generate the key without building Gluon.
