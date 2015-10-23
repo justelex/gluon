@@ -25,7 +25,10 @@ after merging the changes, too.
 
 The preferred way to discuss in the IRC channel ([#gluon] on irc.hackint.org)
 or on the [mailing list], however, you can also open a new issue on Github to
-discuss there.
+discuss there. We maintain a [list of rejected
+features](https://github.com/freifunk-gluon/gluon/issues?q=label%3Arejected)
+and we'd like to kindly ask you to review it first. In general, looking for
+duplicates may save you some time.
 
 Develop on top of master
 ------------------------
@@ -56,7 +59,7 @@ If you developed your change in multiple smaller commits, you can easily
 [squash] those before opening the pull request. While discussing, it is okay to
 do your changes using `git commit --amend` and force-push them to your head of
 the pull request. This way, your change always consists of only one commit and
-can be merged in the instant everybode is content with the whole thing.
+can be merged in the instant everybody is content with the whole thing.
 
 
 [community repositories]: http://gluon.readthedocs.org/en/latest/user/site.html#packages

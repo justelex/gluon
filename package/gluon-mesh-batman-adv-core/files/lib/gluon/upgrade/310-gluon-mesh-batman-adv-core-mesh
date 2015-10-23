@@ -6,11 +6,17 @@ local site = require 'gluon.site_config'
 local uci = require('luci.model.uci').cursor()
 
 
+local gw_sel_class
+if site.mesh and site.mesh.batman_adv then
+  gw_sel_class = site.mesh.batman_adv.gw_sel_class
+end
+
 uci:delete('batman-adv', 'bat0')
 uci:section('batman-adv', 'mesh', 'bat0',
 	    {
 		    orig_interval = 5000,
 		    gw_mode = 'client',
+		    gw_sel_class = gw_sel_class,
 		    hop_penalty = 15,
 		    multicast_mode = 0,
 	    }
@@ -20,22 +26,28 @@ uci:commit('batman-adv')
 
 
 if not uci:get('network', 'client') then
-  local ifname
+  uci:section('network', 'interface', 'client',
+    {
+      type = 'bridge',
+      proto = 'dhcpv6',
+      reqprefix = 'no',
+    }
+  )
+
+  uci:add_to_set('network', 'client', 'ifname', 'bat0')
 
   if sysconfig.lan_ifname and not site.mesh_on_lan then
-    ifname = sysconfig.lan_ifname .. ' bat0'
-  else
-    ifname = 'bat0'
+    uci:add_to_set('network', 'client', 'ifname', sysconfig.lan_ifname)
   end
+end
 
-  uci:section('network', 'interface', 'client',
-	      {
-		ifname = ifname,
-		type = 'bridge',
-		proto = 'dhcpv6',
-		reqprefix = 'no',
-	      }
-  )
+local ifname = uci:get('network', 'client', 'ifname')
+
+if type(ifname) == 'string' then
+  uci:delete('network', 'client', 'ifname')
+  for x in ifname:gmatch("[^%s]+") do
+    uci:add_to_set('network', 'client', 'ifname', x)
+  end
 end
 
 uci:set('network', 'client', 'igmp_snooping', 0)

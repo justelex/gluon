@@ -146,6 +146,7 @@ endef
 define GluonProfile
 PROFILES += $(1)
 PROFILE_PACKAGES += $(filter-out -%,$(2) $(GLUON_$(1)_SITE_PACKAGES))
+GLUON_$(1)_PROFILE := $(if $(3),$(3),$(1))
 GLUON_$(1)_DEFAULT_PACKAGES := $(2)
 GLUON_$(1)_FACTORY_SUFFIX := -squashfs-factory
 GLUON_$(1)_SYSUPGRADE_SUFFIX := -squashfs-sysupgrade
@@ -167,6 +168,11 @@ endef
 define GluonModel
 GLUON_$(1)_MODELS += $(3)
 GLUON_$(1)_MODEL_$(3) := $(2)
+GLUON_$(1)_MODEL_$(3)_ALIASES :=
+endef
+
+define GluonModelAlias
+GLUON_$(1)_MODEL_$(2)_ALIASES += $(3)
 endef
 
 
@@ -374,11 +380,10 @@ package_install: FORCE
 include $(INCLUDE_DIR)/version.mk
 
 opkg_config: FORCE
-	cp $(GLUON_OPENWRTDIR)/package/system/opkg/files/opkg.conf $(TARGET_DIR)/etc/opkg.conf
 	for d in base packages luci routing telephony management; do \
-		echo "src/gz %n_$$d %U/$$d" >> $(TARGET_DIR)/etc/opkg.conf; \
-	done
-	$(VERSION_SED) $(TARGET_DIR)/etc/opkg.conf
+		echo "src/gz %n_$$d %U/$$d"; \
+	done > $(TARGET_DIR)/etc/opkg/distfeeds.conf
+	$(VERSION_SED) $(TARGET_DIR)/etc/opkg/distfeeds.conf
 
 
 image: FORCE
@@ -391,7 +396,7 @@ image: FORCE
 
 	$(call Image/mkfs/prepare)
 	$(_SINGLE)$(NO_TRACE_MAKE) -C $(TOPDIR)/target/linux/$(BOARD)/image install TARGET_BUILD=1 IMG_PREFIX=gluon \
-		PROFILE="$(PROFILE)" KDIR="$(PROFILE_KDIR)" TARGET_DIR="$(TARGET_DIR)" BIN_DIR="$(BIN_DIR)" TMP_DIR="$(TMP_DIR)"
+		PROFILE="$(GLUON_$(PROFILE)_PROFILE)" KDIR="$(PROFILE_KDIR)" TARGET_DIR="$(TARGET_DIR)" BIN_DIR="$(BIN_DIR)" TMP_DIR="$(TMP_DIR)"
 
 	$(foreach model,$(GLUON_$(PROFILE)_MODELS), \
 		$(if $(GLUON_$(PROFILE)_SYSUPGRADE_EXT), \
@@ -402,7 +407,19 @@ image: FORCE
 			rm -f $(GLUON_IMAGEDIR)/factory/gluon-*-$(model)$(GLUON_$(PROFILE)_FACTORY_EXT) && \
 			cp $(BIN_DIR)/gluon-$(GLUON_$(PROFILE)_MODEL_$(model))$(GLUON_$(PROFILE)_FACTORY_SUFFIX)$(GLUON_$(PROFILE)_FACTORY_EXT) $(GLUON_IMAGEDIR)/factory/$(IMAGE_PREFIX)-$(model)$(GLUON_$(PROFILE)_FACTORY_EXT) && \
 		) \
+		\
+		$(foreach alias,$(GLUON_$(PROFILE)_MODEL_$(model)_ALIASES), \
+			$(if $(GLUON_$(PROFILE)_SYSUPGRADE_EXT), \
+				rm -f $(GLUON_IMAGEDIR)/sysupgrade/gluon-*-$(alias)-sysupgrade$(GLUON_$(PROFILE)_SYSUPGRADE_EXT) && \
+				ln -s $(IMAGE_PREFIX)-$(model)-sysupgrade$(GLUON_$(PROFILE)_SYSUPGRADE_EXT) $(GLUON_IMAGEDIR)/sysupgrade/$(IMAGE_PREFIX)-$(alias)-sysupgrade$(GLUON_$(PROFILE)_SYSUPGRADE_EXT) && \
+			) \
+			$(if $(GLUON_$(PROFILE)_FACTORY_EXT), \
+				rm -f $(GLUON_IMAGEDIR)/factory/gluon-*-$(alias)$(GLUON_$(PROFILE)_FACTORY_EXT) && \
+				ln -s $(IMAGE_PREFIX)-$(model)$(GLUON_$(PROFILE)_FACTORY_EXT) $(GLUON_IMAGEDIR)/factory/$(IMAGE_PREFIX)-$(alias)$(GLUON_$(PROFILE)_FACTORY_EXT) && \
+			) \
+		) \
 	) :
+
 
 image/%: $(gluon_prepared_stamp)
 	+$(GLUONMAKE) image PROFILE="$(patsubst image/%,%,$@)" V=s$(OPENWRT_VERBOSE)

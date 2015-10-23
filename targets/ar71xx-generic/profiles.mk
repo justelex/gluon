@@ -4,10 +4,15 @@
 
 # CPE210/220/510/520
 $(eval $(call GluonProfile,CPE510,rssileds))
-$(eval $(call GluonModel,CPE510,cpe210-220-510-520,tp-link-cpe210-v1.0))
-$(eval $(call GluonModel,CPE510,cpe210-220-510-520,tp-link-cpe220-v1.0))
 $(eval $(call GluonModel,CPE510,cpe210-220-510-520,tp-link-cpe510-v1.0))
-$(eval $(call GluonModel,CPE510,cpe210-220-510-520,tp-link-cpe520-v1.0))
+
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe210-v1.0))
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe220-v1.0))
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe520-v1.0))
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe210-v1.1))
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe220-v1.1))
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe510-v1.1))
+$(eval $(call GluonModelAlias,CPE510,tp-link-cpe510-v1.0,tp-link-cpe520-v1.1))
 
 # TL-WA701N/ND v1, v2
 $(eval $(call GluonProfile,TLWA701))
@@ -54,6 +59,7 @@ $(eval $(call GluonModel,TLWR841,tl-wr841nd-v5,tp-link-tl-wr841n-nd-v5))
 $(eval $(call GluonModel,TLWR841,tl-wr841nd-v7,tp-link-tl-wr841n-nd-v7))
 $(eval $(call GluonModel,TLWR841,tl-wr841n-v8,tp-link-tl-wr841n-nd-v8))
 $(eval $(call GluonModel,TLWR841,tl-wr841n-v9,tp-link-tl-wr841n-nd-v9))
+$(eval $(call GluonModel,TLWR841,tl-wr841n-v10,tp-link-tl-wr841n-nd-v10))
 
 # TL-WR842N/ND v1, v2
 $(eval $(call GluonProfile,TLWR842))
@@ -69,9 +75,9 @@ $(eval $(call GluonModel,TLWR941,tl-wr941nd-v5,tp-link-tl-wr941n-nd-v5))
 ifeq ($(BROKEN),1)
 # $(eval $(call GluonModel,TLWR941,tl-wr941nd-v6,tp-link-tl-wr941n-nd-v6)) # BROKEN: needs mac80211 update
 
-$(eval $(call GluonModel,TLWR941,tl-wr941nd-v4,tp-link-tl-wr940n-nd-v1)) # BROKEN: untested
-$(eval $(call GluonModel,TLWR941,tl-wr941nd-v5,tp-link-tl-wr940n-nd-v2)) # BROKEN: untested
-# $(eval $(call GluonModel,TLWR941,tl-wr941nd-v6,tp-link-tl-wr940n-nd-v3)) # BROKEN: needs mac80211 update
+$(eval $(call GluonModelAlias,TLWR941,tp-link-tl-wr941n-nd-v4,tp-link-tl-wr940n-nd-v1)) # BROKEN: untested
+$(eval $(call GluonModelAlias,TLWR941,tp-link-tl-wr941n-nd-v5,tp-link-tl-wr940n-nd-v2)) # BROKEN: untested
+# $(eval $(call GluonModelAlias,TLWR941,tp-link-tl-wr941n-nd-v6,tp-link-tl-wr940n-nd-v3)) # BROKEN: needs mac80211 update
 endif
 
 # TL-WR1043N/ND v1, v2
@@ -104,6 +110,7 @@ $(eval $(call GluonModel,TLWA860,tl-wa860re-v1,tp-link-tl-wa860re-v1))
 
 # TL-WA901N/ND v2
 $(eval $(call GluonProfile,TLWA901))
+$(eval $(call GluonModel,TLWA901,tl-wa901nd-v1,tp-link-tl-wa901n-nd-v1))
 $(eval $(call GluonModel,TLWA901,tl-wa901nd-v2,tp-link-tl-wa901n-nd-v2))
 $(eval $(call GluonModel,TLWA901,tl-wa901nd-v3,tp-link-tl-wa901n-nd-v3))
 
@@ -139,10 +146,12 @@ endif
 
 ## Ubiquiti (everything)
 $(eval $(call GluonProfile,UBNT))
+$(eval $(call GluonModel,UBNT,ubnt-air-gateway,ubiquiti-airgateway))
+
 $(eval $(call GluonModel,UBNT,ubnt-bullet-m,ubiquiti-bullet-m))
-$(eval $(call GluonModel,UBNT,ubnt-bullet-m,ubiquiti-loco-m))
-$(eval $(call GluonModel,UBNT,ubnt-bullet-m,ubiquiti-picostation-m))
-$(eval $(call GluonModel,UBNT,ubnt-bullet-m,ubiquiti-rocket-m))
+$(eval $(call GluonModelAlias,UBNT,ubiquiti-bullet-m,ubiquiti-loco-m))
+$(eval $(call GluonModelAlias,UBNT,ubiquiti-bullet-m,ubiquiti-picostation-m))
+$(eval $(call GluonModelAlias,UBNT,ubiquiti-bullet-m,ubiquiti-rocket-m))
 
 $(eval $(call GluonModel,UBNT,ubnt-loco-m-xw,ubiquiti-loco-m-xw))
 $(eval $(call GluonModel,UBNT,ubnt-nano-m,ubiquiti-nanostation-m))
@@ -179,9 +188,24 @@ $(eval $(call GluonModel,WRT160NL,wrt160nl,linksys-wrt160nl))
 $(eval $(call GluonProfile,WZRHPG450H))
 $(eval $(call GluonModel,WZRHPG450H,wzr-hp-g450h,buffalo-wzr-hp-g450h))
 
-# WZR-HP-AG300H/WZR-600DHP
+# WZR-HP-AG300H (factory)
 $(eval $(call GluonProfile,WZRHPAG300H))
-$(eval $(call GluonModel,WZRHPAG300H,wzr-hp-ag300h,buffalo-wzr-hp-ag300h-wzr-600dhp))
+$(eval $(call GluonProfileSysupgradeSuffix,WZRHPAG300H))
+$(eval $(call GluonModel,WZRHPAG300H,wzr-hp-ag300h,buffalo-wzr-hp-ag300h))
+
+# WZR-600DHP (factory)
+$(eval $(call GluonProfile,WZR600DHP))
+$(eval $(call GluonProfileSysupgradeSuffix,WZR600DHP))
+$(eval $(call GluonModel,WZR600DHP,wzr-600dhp,buffalo-wzr-600dhp))
+
+# WZR-HP-AG300H/WZR-600DHP (sysupgrade)
+$(eval $(call GluonProfile,WZRHPAG300H_WZR600DHP,,WZRHPAG300H))
+$(eval $(call GluonProfileFactorySuffix,WZRHPAG300H_WZR600DHP))
+$(eval $(call GluonModel,WZRHPAG300H_WZR600DHP,wzr-hp-ag300h,buffalo-wzr-hp-ag300h-wzr-600dhp))
+
+# WHR-HP-G300N
+#$(eval $(call GluonProfile,WHRHPG300N))
+#$(eval $(call GluonModel,WHRHPG300N,whr-hp-g300n,buffalo-whr-hp-g300n))
 
 ## Netgear
 
