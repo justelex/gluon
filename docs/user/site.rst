@@ -362,6 +362,7 @@ site-repos in the wild
 
 This is a non-exhaustive list of site-repos from various communities:
 
+* `site-ffa <https://github.com/tecff/site-ffa>`_ (Altdorf, Landshut & Umgebung)
 * `site-ffbs <https://github.com/ffbs/site-ffbs>`_ (Braunschweig)
 * `site-ffhb <https://github.com/FreifunkBremen/gluon-site-ffhb>`_ (Bremen)
 * `site-ffda <https://github.com/freifunk-darmstadt/site-ffda>`_ (Darmstadt)
@@ -374,7 +375,7 @@ This is a non-exhaustive list of site-repos from various communities:
 * `site-ffmyk <https://github.com/FreifunkMYK/site-ffmyk>`_ (Mayen-Koblenz)
 * `site-ffm <https://github.com/freifunkMUC/site-ffm>`_ (München)
 * `site-ffms <https://github.com/FreiFunkMuenster/site-ffms>`_ (Münsterland)
-* `site-ffnw <https://git.freifunk-ol.de/root/siteconf.git>`_ (Nordwest)
+* `site-ffnw <https://git.nordwest.freifunk.net/ffnw/siteconf/tree/master>`_ (Nordwest)
 * `site-ffpb <https://git.c3pb.de/freifunk-pb/site-ffpb>`_ (Paderborn)
 * `site-ffka <https://github.com/ffka/site-ffka>`_ (Karlsruhe)
 * `site-ffrl <https://github.com/ffrl/sites-ffrl>`_ (Rheinland)

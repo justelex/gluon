@@ -107,7 +107,7 @@ $(eval $(call GluonModel,TLWA850,tl-wa850re-v1,tp-link-tl-wa850re-v1))
 $(eval $(call GluonProfile,TLWA860))
 $(eval $(call GluonModel,TLWA860,tl-wa860re-v1,tp-link-tl-wa860re-v1))
 
-# TL-WA901N/ND v2
+# TL-WA901N/ND v1, v2, v3
 $(eval $(call GluonProfile,TLWA901))
 $(eval $(call GluonModel,TLWA901,tl-wa901nd-v1,tp-link-tl-wa901n-nd-v1))
 $(eval $(call GluonModel,TLWA901,tl-wa901nd-v2,tp-link-tl-wa901n-nd-v2))
@@ -232,3 +232,13 @@ $(eval $(call GluonModel,ALL0315N,all0315n,allnet-all0315n))
 $(eval $(call GluonProfile,GLINET))
 $(eval $(call GluonModel,GLINET,gl-inet-6408A-v1,gl-inet-6408a-v1))
 $(eval $(call GluonModel,GLINET,gl-inet-6416A-v1,gl-inet-6416a-v1))
+
+## Western Digital
+
+# WD MyNet N600
+$(eval $(call GluonProfile,MYNETN600))
+$(eval $(call GluonModel,MYNETN600,mynet-n600,wd-my-net-n600))
+
+# WD MyNet N750
+$(eval $(call GluonProfile,MYNETN750))
+$(eval $(call GluonModel,MYNETN750,mynet-n750,wd-my-net-n750))
