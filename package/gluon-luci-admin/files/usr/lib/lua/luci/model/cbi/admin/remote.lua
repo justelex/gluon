@@ -54,7 +54,7 @@ if fs.access("/etc/config/dropbear") then
     end
   end
 end
-
+--[[
 local m2 = Map("system", translate("Password"))
 m2.reset = false
 m2.pageaction = false
@@ -99,7 +99,7 @@ function m2.on_commit(map)
     end
   end
 end
-
-local c = Compound(m, m2)
+]]--
+local c = Compound(m)
 c.pageaction = false
 return c
